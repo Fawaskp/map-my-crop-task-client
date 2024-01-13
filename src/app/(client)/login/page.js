@@ -4,14 +4,27 @@ import { LoginSchema } from "../../../validation/Yup";
 import { useFormikValidation } from "../../../validation/Formik";
 import { baseAxiosInstance } from "../../../utils/axiosUtils";
 import { toast } from "react-toastify";
+import { useRouter } from "next/navigation";
 
 export default function LoginPage() {
   const initialValues = { username: "", password: "" };
+  const router = useRouter()
+
+  const setCookie = (name, value, days) => {
+    let expires = "";
+    if (days) {
+      const date = new Date();
+      date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000);
+      expires = "; expires=" + date.toUTCString();
+    }
+    document.cookie = name + "=" + (value || "") + expires + "; path=/";
+  };
 
   const handleSubmit = (e) => {
     // console.log('Hellllo -->', values);
     baseAxiosInstance.post('token/', values).then((res) => {
-      console.log(res);
+      setCookie('userJwt',res.data.access,3)
+      router.push('/')
     }).catch((err) => {
       if (err.response.data.detail) {
         toast.error(err.response.data.detail)

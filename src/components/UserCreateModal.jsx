@@ -1,10 +1,10 @@
-import React, { useRef, useState } from "react";
+import React, { useRef } from "react";
 import { adminAxiosInstance } from "../utils/axiosUtils";
 import { toast } from "react-toastify";
 import { useFormikValidation } from "../validation/Formik";
 import { RegisterSchema } from "../validation/Yup";
 
-function UseCreateModal({ isOpen, onClose,fetchUsers }) {
+function UseCreateModal({ isOpen, onClose, fetchUsers }) {
   const initialValues = {
     username: "",
     password: "",
@@ -12,6 +12,7 @@ function UseCreateModal({ isOpen, onClose,fetchUsers }) {
     confirmPassword: "",
   };
   const superuserRef = useRef();
+
 
   const handleSubmit = () => {
     console.log("Hellllo -->", values);
@@ -21,9 +22,10 @@ function UseCreateModal({ isOpen, onClose,fetchUsers }) {
       .post(url, values)
       .then((res) => {
         console.log(res);
-        toast.success(`${isSu?'Admin':'User'} created Successfully`)
-        fetchUsers()
-        onClose()
+        toast.success(`${isSu ? "Admin" : "User"} created Successfully`);
+        handleReset()
+        fetchUsers();
+        onClose();
       })
       .catch((err) => {
         if (err.response.data.username) {
@@ -40,7 +42,8 @@ function UseCreateModal({ isOpen, onClose,fetchUsers }) {
     RegisterSchema,
     initialValues
   );
-  const { values, errors, touched, handleBlur, handleChange } = formik;
+  const { values, errors, touched, handleReset, handleBlur, handleChange } =
+    formik;
 
   return (
     <>

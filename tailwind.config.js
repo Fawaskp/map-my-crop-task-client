@@ -16,7 +16,7 @@ module.exports = {
         'main-green':'#255946',
         'main-orange':'#efb443',
         'main-orange-dark':'#eba342',
-      }
+      },
     },
   },
   plugins: [],
