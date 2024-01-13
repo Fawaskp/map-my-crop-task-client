@@ -1,8 +1,8 @@
 import React, { useRef, useState } from "react";
-import { adminAxiosInstance } from "../utils/axiosUtils";
+import { adminAxiosInstance } from "../../utils/axiosUtils";
 import { toast } from "react-toastify";
-import { useFormikValidation } from "../validation/Formik";
-import { RegisterSchema } from "../validation/Yup";
+import { useFormikValidation } from "../../validation/Formik";
+import { RegisterSchema } from "../../validation/Yup";
 
 function UseCreateModal({ isOpen, onClose, fetchUsers }) {
   const initialValues = {

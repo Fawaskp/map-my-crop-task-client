@@ -4,14 +4,11 @@ export async function middleware(req) {
   const path = req.nextUrl.pathname;
 
   const cookieString = req.headers.get("cookie");
-  // console.log('Cookie string --> ', cookieString)
 
   let adminJwtCookie
   let userJwtCookie
   if (cookieString) {
-    // Split the cookie string into individual cookies
     const cookies = cookieString.split(";");
-    // Find the cookie with the name "adminJWT"
     adminJwtCookie = cookies?.find(cookie => cookie.trim().startsWith("adminJwt=")) || undefined
     userJwtCookie = cookies.find(cookie => cookie.trim().startsWith("userJwt=")) || undefined
   }
@@ -23,9 +20,6 @@ export async function middleware(req) {
   // Check for excluded path
   if (path.startsWith("/admin")) {
     if (path === '/admin/login') {
-      console.log();
-      console.log('From /admin/login , ---> ',adminJwtValue)
-      console.log();
       if (!adminJwtValue) {
         return NextResponse.next(); // Allow access to login page
       }

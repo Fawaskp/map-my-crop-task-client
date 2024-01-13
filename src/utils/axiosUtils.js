@@ -25,13 +25,13 @@ const attachToken = async (req, tokenName) => {
 const userBaseAxiosInstance = createAxiosClient(apiBaseUrl);
 userBaseAxiosInstance.interceptors.request.use(async (req) => {
     const modifiedReq = await attachToken(req, "userJwt");
-    return req
+    return modifiedReq
 });
 
 const adminBaseAxiosInstance = createAxiosClient(apiBaseUrl);
 adminBaseAxiosInstance.interceptors.request.use(async (req) => {
     const modifiedReq = attachToken(req, "adminJwt");
-    return req
+    return modifiedReq
 });
 
 
