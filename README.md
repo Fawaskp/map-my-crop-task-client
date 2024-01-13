@@ -54,7 +54,7 @@ Before running this application, set up the backend server and make sure its wor
 
 To run this project, you will need to add the following environment variables to your .env file and store it in the root directory of the project:
 
-` BASE_URL = http://127.0.0.1:8000/api`
+` BASE_URL`
 
 ` NEXT_PUBLIC_USER_BASE_URL = $BASE_URL/user`
 
