@@ -1,11 +1,12 @@
 'use client'
 import React, { useEffect, useRef, useState } from 'react'
-import { baseAxiosInstance, userAxiosInstance } from '../../utils/axiosUtils';
+import { userBaseAxiosInstance, userAxiosInstance } from '../../utils/axiosUtils';
 import { useRouter } from 'next/navigation';
 import { toast } from 'react-toastify';
 import dynamic from "next/dynamic";
 import { jwtDecode } from 'jwt-decode';
-import { getToken } from "@/utils/cookie"
+import Alert from '@/components/Alert';
+import { getToken } from '@/utils/serverCookie';
 
 const Map = dynamic(() => {
   return import('../../components/maps/UserMap');
@@ -15,11 +16,15 @@ export default function Home() {
   const nameRef = useRef(null);
   const router = useRouter()
   const [markerPosition, setMarkerPosition] = useState([0, 0]);
+  const [username, setUsername] = useState(['User']);
+  const [isOpen, setIsOpen] = useState(false);
   const [poidata, setPoiData] = useState([])
 
   const fetchUserPois = () => {
     getToken('userJwt').then((token) => {
-      userAxiosInstance.get(`pois/${jwtDecode(token).user_id}/`).then((res) => {
+      const decoded = jwtDecode(token)
+      setUsername(decoded.username)
+      userAxiosInstance.get(`pois/${decoded.user_id}/`).then((res) => {
         setPoiData(res.data)
         console.log(res.data);
       })
@@ -36,10 +41,14 @@ export default function Home() {
     router.push('/login')
   }
 
+  const handleModalToggle = () =>{
+    setIsOpen(!isOpen)
+  }
+
   const createPOI = () => {
     const name = nameRef.current.value;
     getToken('userJwt').then((accessToken) => {
-      baseAxiosInstance
+      userBaseAxiosInstance
         .post("/create-poi/", {
           name,
           user: jwtDecode(accessToken).user_id,
@@ -60,19 +69,23 @@ export default function Home() {
   };
 
   return (
-    <div className='max-h-screen mx-auto flex 2xl:max-w-7xl flex-col p-10' >
-      <div className='py-10 flex justify-between items-center' >
-        <div>
-          <h1 className='sm:text-xl md:text-3xl w-full font-bold text-left' >Hi, UserName</h1>
-          <p className='text-xs font-light py-1 text-gray-500' >Add your POI (Place of Interest)</p>
+    <>
+    <Alert isModalOpen={isOpen} action={logout} handleModalToggle={handleModalToggle} message={'Are you sure you want to logout?'} />
+      <div className='max-h-screen mx-auto flex 2xl:max-w-7xl flex-col p-10' >
+        <div className='py-3 flex justify-between items-center' >
+          <div>
+            <h1 className='sm:text-xl md:text-3xl w-full font-bold text-left' >Hi, {username}</h1>
+            <p className='text-xs font-light py-1 text-gray-500' >Your POI (Place of Interest)</p>
+          </div>
+          <span onClick={handleModalToggle} className='cursor-pointer font-bold md:text-xl p-3' >
+            Logout
+          </span>
         </div>
-        <span onClick={logout} className='cursor-pointer font-bold md:text-xl' >
-          Logout
-        </span>
+        <div>
+          <p className='text-sm text-gray-400 text-end p-2' >Total POI: {poidata.length}</p>
+          <Map markerPosition={markerPosition} setMarkerPosition={setMarkerPosition} nameRef={nameRef} markers={poidata} fetchUserPois={fetchUserPois} handleSubmit={createPOI} />
+        </div>
       </div>
-      <div>
-        <Map markerPosition={markerPosition} setMarkerPosition={setMarkerPosition} nameRef={nameRef} markers={poidata} handleSubmit={createPOI} />
-      </div>
-    </div>
+    </>
   )
 }

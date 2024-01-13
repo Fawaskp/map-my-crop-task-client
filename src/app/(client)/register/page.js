@@ -1,16 +1,14 @@
 "use client";
 import React, { useState } from "react";
-import { LoginSchema } from "../../../validation/Yup";
-import { useFormikValidation } from "../../../validation/Formik";
-import { userBaseAxiosInstance } from "../../../utils/axiosUtils";
+import { RegisterSchema } from "@/validation/Yup";
+import { useFormikValidation } from "@/validation/Formik";
+import { userAxiosInstance } from "@/utils/axiosUtils";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { setCookie } from "@/utils/clientCookie";
-import { jwtDecode } from "jwt-decode";
 
-export default function LoginPage() {
-  const initialValues = { username: "", password: "" };
+export default function RegisterPage() {
+  const initialValues = { username: "", password: "", email: "", confirmPassword: "" };
   const router = useRouter()
   const [passwordVisible, setPasswordVisible] = useState(false);
 
@@ -19,17 +17,12 @@ export default function LoginPage() {
     setPasswordVisible(!passwordVisible);
   };
 
-  const handleSubmit = async (e) => {
-    // console.log('Hellllo -->', values);
-    userBaseAxiosInstance.post('token/', values).then((res) => {
-      // console.log('Response --> ', res)
-      const token = res.data.access
-      if (jwtDecode(token).role == 'admin') {
-        toast.error("Admin can't get into user page")
-        return
-      }
-      setCookie('userJwt', token, 3)
-      router.push('/')
+
+  const handleSubmit = () => {
+    // console.log('values-> ', values)
+    userAxiosInstance.post('/register/', values).then((res) => {
+      toast.success('Account created sucessfully')
+      router.push('/login')
     }).catch((err) => {
       if (err.response.data.detail) {
         toast.error(err.response.data.detail)
@@ -41,19 +34,19 @@ export default function LoginPage() {
     })
   };
 
-  const formik = useFormikValidation(handleSubmit, LoginSchema, initialValues);
+  const formik = useFormikValidation(handleSubmit, RegisterSchema, initialValues);
   const { values, errors, touched, handleBlur, handleChange } = formik;
 
   return (
     <>
       <div className="flex justify-center items-center h-screen">
-        <div className="mx-3 sm:mx-0 sm:w-1/2 max-w-xl">
+        <div className="mx-3 sm:mx-0 sm:w-1/2 max-w-2xl">
           <form
             className="rounded-lg p-12 border-2 border-main-green"
             onSubmit={formik.handleSubmit}
           >
             <h2 className="font-bold text-xl md:text-2xl text-center text-main-green dark:text-white">
-              Login Here
+              Register Here
             </h2>
 
             <div className="mt-4">
@@ -68,6 +61,21 @@ export default function LoginPage() {
               />
               {touched.username && errors.username && (
                 <div className="text-red-500 text-xs py-1">{errors.username}</div>
+              )}
+            </div>
+
+            <div className="mt-4">
+              <input
+                name="email"
+                placeholder="E-mail"
+                className="w-full text-black dark:text-white dark:bg-black rounded-md p-3 border border-main-green"
+                onChange={handleChange}
+                onBlur={handleBlur}
+                value={values.email}
+                error={touched.email && errors.email}
+              />
+              {touched.username && errors.email && (
+                <div className="text-red-500 text-xs py-1">{errors.email}</div>
               )}
             </div>
 
@@ -120,7 +128,7 @@ export default function LoginPage() {
                 name="password"
                 type={passwordVisible ? "text" : "password"}
                 placeholder="Password"
-                className="w-full text-black dark:text-white dark:bg-black rounded-md p-3 border border-main-green"
+                className="w-full text-black  dark:text-white dark:bg-black rounded-md p-3 border border-main-green"
                 onChange={handleChange}
                 onBlur={handleBlur}
                 value={values.password}
@@ -133,22 +141,39 @@ export default function LoginPage() {
               )}
             </div>
 
+            <div className="mt-4 mb-4">
+              <input
+                name="confirmPassword"
+                type="password"
+                placeholder="Confirm Password"
+                className="w-full text-black dark:text-white dark:bg-black rounded-md p-3 border border-main-green"
+                onChange={handleChange}
+                onBlur={handleBlur}
+                value={values.confirmPassword}
+                error={touched.confirmPassword && errors.confirmPassword}
+              />
+              {touched.confirmPassword && errors.confirmPassword && (
+                <div className="text-red-500 text-xs py-1">
+                  {errors.confirmPassword}
+                </div>
+              )}
+            </div>
+
             <div className="md:w-1/2 mx-auto">
               <button
                 type="submit"
                 className="w-full mx-auto p-2 bg-main-orange hover:bg-main-orange-dark transition-all duration-300 text-white rounded-lg"
                 style={{ fontWeight: "bold" }}
               >
-                LOGIN
+                Register
               </button>
             </div>
-
             <div className="mt-4 flex justify-center text-sm sm:text-base">
               <span>
-                <span className="text-gray-500 dark:text-gray-300" >Don't have an account?</span>
-                <Link href="/register">
+                <span className="text-gray-500 dark:text-gray-300" >Already have a account?</span>
+                <Link href="/login">
                   <span className="mx-2 font-medium" >
-                    Signup
+                    Login
                   </span>
                 </Link>
               </span>

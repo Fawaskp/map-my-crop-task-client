@@ -25,17 +25,8 @@ export default function AdminHome() {
     fetchAllPois();
   }, []);
 
-  const logout = () => {
-    document.cookie = "adminJwt=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-    window.location.reload();
-    router.push('/admin/login')
-  }
-
   return (
     <div className="mx-auto max-h-screen flex max-w-6xl flex-col p-10">
-       <span onClick={logout} className='cursor-pointer font-bold md:text-xl' >
-          Logout
-        </span>
       <div>
         <h1 className="text-2xl w-full font-bold text-left my-4">Hi, Admin</h1>
       </div>

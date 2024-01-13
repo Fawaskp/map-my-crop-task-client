@@ -1,5 +1,7 @@
 import axios from "axios";
 import { userBaseUrl, adminBaseUrl,apiBaseUrl } from "../constants/constants";
+import { getToken } from "@/utils/serverCookie";
+
 
 const createAxiosClient = (baseURL) => {
     const client = axios.create({
@@ -10,19 +12,28 @@ const createAxiosClient = (baseURL) => {
     return client;
 };
 
-const attachToken = (req, tokenName) => {
-    let authToken = localStorage.getItem(tokenName);
-    if (authToken) {
+const attachToken = async (req, tokenName) => {
+    let authToken = await getToken(tokenName);
+    // console.log('Token -> ',authToken);
+    if (authToken!=undefined) {
         req.headers.Authorization = `Bearer ${authToken}`;
+        // console.log('Modified Requset -> ',req);
     }
     return req;
 };
 
-const baseAxiosInstance = createAxiosClient(apiBaseUrl);
-baseAxiosInstance.interceptors.request.use(async (req) => {
+const userBaseAxiosInstance = createAxiosClient(apiBaseUrl);
+userBaseAxiosInstance.interceptors.request.use(async (req) => {
+    const modifiedReq = await attachToken(req, "userJwt");
+    return req
+});
+
+const adminBaseAxiosInstance = createAxiosClient(apiBaseUrl);
+adminBaseAxiosInstance.interceptors.request.use(async (req) => {
     const modifiedReq = attachToken(req, "adminJwt");
     return req
 });
+
 
 const userAxiosInstance = createAxiosClient(userBaseUrl);
 userAxiosInstance.interceptors.request.use(async (req) => {
@@ -36,4 +47,4 @@ adminAxiosInstance.interceptors.request.use(async (req) => {
     return modifiedReq;
 });
 
-export { userAxiosInstance, baseAxiosInstance, adminAxiosInstance };
+export { userAxiosInstance, adminBaseAxiosInstance,userBaseAxiosInstance, adminAxiosInstance };

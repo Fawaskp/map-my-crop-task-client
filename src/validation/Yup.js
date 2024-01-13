@@ -2,14 +2,12 @@ import * as Yup from "yup";
 
 export const LoginSchema = Yup.object({
   username: Yup.string().required("Please enter your username"),
-  password: Yup.string()
-    // .min(8, "Password must be at least 8 characters")
-    .required("Please enter a password"),
+  password: Yup.string().required("Please enter a password"),
 });
 
 export const RegisterSchema = Yup.object({
-  username: Yup.string().min(4).required("Please enter your name"),
-  email: Yup.string().email().required("Please enter your email"),
+  username: Yup.string().min(4).required("Please enter usernaeme"),
+  email: Yup.string().email().required("Please enter email"),
   password: Yup.string()
     .min(8, "Password must be at least 8 characters")
     .matches(

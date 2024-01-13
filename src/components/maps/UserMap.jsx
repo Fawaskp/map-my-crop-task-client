@@ -1,15 +1,17 @@
 "use client";
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import { toast } from "react-toastify";
+import Alert from "../Alert";
+import { userBaseAxiosInstance } from "@/utils/axiosUtils";
 
 const Map = ({
   markerPosition,
   setMarkerPosition,
   markers,
   handleSubmit,
+  fetchUserPois,
   nameRef,
-  setViewDetail,
 }) => {
   const mapRef = useRef(null);
   const draggableMarkerIcon = new L.Icon({
@@ -18,6 +20,8 @@ const Map = ({
     iconAnchor: [12, 41],
     popupAnchor: [1, -34],
   });
+  const [isOpen, setIsOpen] = useState(false);
+  const [item, setItem] = useState("POI");
 
   const validateAndSubmit = () => {
     if (!nameRef.current.value.trim()) {
@@ -51,8 +55,35 @@ const Map = ({
     setMarkerPosition([lat, lng]);
   };
 
+  const handleModalToggle = () => {
+    setIsOpen(!isOpen);
+  };
+
+  const deletePOI = () => {
+    userBaseAxiosInstance
+      .delete(`/poi-detail/${item.id}`)
+      .then((res) => {
+        console.log(res);
+        toast.success("POI Deleted Successfully");
+        handleModalToggle()
+        fetchUserPois();
+      })
+      .catch((err) => {
+        console.log(err);
+        toast.error("Something went wrong");
+      });
+  };
+
+
   return (
     <>
+      <Alert
+        isModalOpen={isOpen}
+        action={deletePOI}
+        handleModalToggle={handleModalToggle}
+        message={`Are you sure you want to delete ${item.name} ?`}
+      />
+
       <MapContainer
         className="rounded-xl mx-auto w-full"
         style={{ height: "500px" }}
@@ -65,15 +96,20 @@ const Map = ({
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         />
 
-        {markers.map(({ name, latitude, longitude, username }) => (
-          <Marker
-            eventHandlers={{ click: () => setViewDetail({ name, username }) }}
-            key={name}
-            position={[latitude, longitude]}
-          >
+        {markers.map(({ id, name, latitude, longitude, username }) => (
+          <Marker key={name} position={[latitude, longitude]}>
             <Popup>
-              {name}<br/>
-              <span className="text-xs text-red-600 cursor-pointer" >delete</span>
+              {name}
+              <br />
+              <span
+                onClick={() => {
+                  setItem({ name, id });
+                  handleModalToggle();
+                }}
+                className="text-xs text-red-600 cursor-pointer"
+              >
+                delete
+              </span>
             </Popup>
           </Marker>
         ))}

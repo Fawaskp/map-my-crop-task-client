@@ -23,6 +23,9 @@ export async function middleware(req) {
   // Check for excluded path
   if (path.startsWith("/admin")) {
     if (path === '/admin/login') {
+      console.log();
+      console.log('From /admin/login , ---> ',adminJwtValue)
+      console.log();
       if (!adminJwtValue) {
         return NextResponse.next(); // Allow access to login page
       }
