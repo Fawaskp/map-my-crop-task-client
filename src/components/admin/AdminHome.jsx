@@ -62,7 +62,7 @@ export default function AdminHome() {
       <div>
         <div className="w-full flex justify-between items-center">
           {searchuser ? (
-            <h1 className="font-normal text-gray-200 text-xl p-2">
+            <h1 className="font-normal dark:text-gray-200 text-xl p-2">
               {searchuser}'s POI ({poindata.length})
             </h1>
           ) : (
@@ -94,7 +94,7 @@ export default function AdminHome() {
                             filterPoisByUser(user.id);
                             searchRef.current.value = user.username;
                           }}
-                          className="flex items-center gap-4 my-1 rounded-10 p-2 hover:bg-gray-500 cursor-pointer duration-300"
+                          className="flex items-center gap-4 my-1 rounded-10 p-2 hover:bg-gray-400 dark:hover:bg-gray-500 cursor-pointer duration-300"
                         >
                           <p className="font-semibold text-sm">
                             {user.username}
