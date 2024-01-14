@@ -1,5 +1,5 @@
 # 🚀 POI Application (Client)
-_This application is designed to manage Places of Interests (POIs) with their respective locations and names. this application provides client side for handling user authentication, CRUD operations on POIs, and user management._
+_This application is designed to manage Places of Interests (POIs) with their respective locations and names. this application provides client side for handling user authentication, CRUD operations on POIs and user management._
 
 ## Features
   - ### User
@@ -9,10 +9,13 @@ _This application is designed to manage Places of Interests (POIs) with their re
       - Login
       - View and Create Normal User as well as Admin
       - view all POI's
-  - ### Design
-      - neet UI
-      - Dark and Light Theme implemented (system preference)
-      - Responsive design
+        
+## Additinally added
+  - neet simplicit UI
+  - Dark and Light Theme implemented (system preference)
+  - Responsive design
+  - Form validations done with Yup and Formik
+  - debounce enabled user search
 
 ## Installation and Setup
 
