@@ -1,6 +1,8 @@
 # 🚀 POI Application (Client)
 _This application is designed to manage Places of Interests (POIs) with their respective locations and names. this application provides client side for handling user authentication, CRUD operations on POIs and user management._
 
+__loom video:__ [https://www.loom.com/share...](https://www.loom.com/share/53e8c70eca40430e98b303e3ef90cd3e?sid=505bb9d3-fffe-4811-9c6b-a92f37e17e8d)
+
 ## Features
   - ### User
       - Registration & Login
